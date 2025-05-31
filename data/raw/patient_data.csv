@@ -1,0 +1,8 @@
+"patient_id,first_name,last_name,date_of_birth,gender,address,city,state,zip,phone,insurance_id,insurance_effective_date"
+"P001,Jane,Doe,1985-01-15,F,""123 Main St"",""Atlanta"",""GA"",""30301"",""(555) 123-4567"",""ABC123"",2023/01/01"
+"P002,John,Smith,01/16/1988,M,""45, Rue de Lille - Apt 2"",,,""75001"",""(555) 987-6543"",""XYZ789"",01-01-2023"
+"P003,Angela,Li,1988/01/17,F,""No. 77, Regent St, London"",""Atlanta"",""GA"","""",,""ABC123"",2022.05.01"
+"P004,,Johnson,01.20.1975,M,""PO Box 123"",""Unknown"",""GA"",""30303"",""(555) 111-2222"",,"
+"P005,María,González,1989-02-15,F,""Av. Reforma, 101"",""Mexico City"",""MX"",""11000"",,""INT999"",2022-01-05"
+"P006,David,Martinez,1990/02/30,M,,,,,,,"
+"P007,Invalid,DOB, 1985-13-99,M,"""",""Unknown"",""??"","""","""",""ABC123"",""2022-02-28"""

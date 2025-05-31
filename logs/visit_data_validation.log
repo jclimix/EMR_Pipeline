@@ -1,0 +1,63 @@
+2025-05-31 16:21:24 | INFO | Loaded patient data:
+2025-05-31 16:21:24 | WARNING | Invalid date in column 'visit_date' at row 6: '01-23-2024' (unrecognized format)
+2025-05-31 16:21:24 | WARNING | Missing or unknown location at row 3: 'Unknown'
+2025-05-31 16:21:24 | WARNING | Missing or unknown location at row 7: 'nan'
+2025-05-31 16:21:24 | WARNING | Missing or unknown location at row 13: 'nan'
+2025-05-31 16:21:24 | WARNING | Missing reason_for_visit at row 13: 'nan'
+2025-05-31 16:21:24 | WARNING | Invalid ICD code at row 7: 'Open' (not a valid format)
+2025-05-31 16:21:24 | WARNING | Invalid ICD code at row 8: 'Completed' (not a valid format)
+2025-05-31 16:21:24 | WARNING | Invalid visit_status at row 7: 'nan' (not in {'Open', 'Cancelled', 'Scheduled', 'In Progress', 'Completed'})
+2025-05-31 16:21:24 | WARNING | Invalid visit_status at row 8: 'nan' (not in {'Open', 'Cancelled', 'Scheduled', 'In Progress', 'Completed'})
+2025-05-31 16:21:24 | WARNING | Invalid billable_amount at row 7: 'USD' (must be a positive number)
+2025-05-31 16:21:24 | WARNING | Invalid billable_amount at row 8: 'USD' (must be a positive number)
+2025-05-31 16:21:24 | WARNING | Invalid currency at row 7: '' (must be a valid 3-letter code)
+2025-05-31 16:21:24 | WARNING | Invalid currency at row 8: 'nan' (must be a valid 3-letter code)
+2025-05-31 16:21:24 | INFO | Visit data validation complete.
+2025-05-31 16:25:45 | INFO | Loaded patient data:
+2025-05-31 16:25:45 | INFO | Moved ICD code 'Z00' to 'icd_code' from row 7
+2025-05-31 16:25:45 | INFO | Moved ICD code 'Z00' to 'icd_code' from row 8
+2025-05-31 16:25:45 | WARNING | Invalid date in column 'visit_date' at row 6: '01-23-2024' (unrecognized format)
+2025-05-31 16:25:45 | WARNING | Missing or unknown location at row 3: 'Unknown'
+2025-05-31 16:25:45 | WARNING | Missing or unknown location at row 7: 'nan'
+2025-05-31 16:25:45 | WARNING | Missing or unknown location at row 13: 'nan'
+2025-05-31 16:25:45 | WARNING | Missing reason_for_visit at row 13: 'nan'
+2025-05-31 16:25:45 | WARNING | Invalid visit_status at row 7: 'nan' (not in {'Cancelled', 'Scheduled', 'Completed', 'Open', 'In Progress'})
+2025-05-31 16:25:45 | WARNING | Invalid visit_status at row 8: 'nan' (not in {'Cancelled', 'Scheduled', 'Completed', 'Open', 'In Progress'})
+2025-05-31 16:25:45 | WARNING | Invalid billable_amount at row 7: 'USD' (must be a positive number)
+2025-05-31 16:25:45 | WARNING | Invalid billable_amount at row 8: 'USD' (must be a positive number)
+2025-05-31 16:25:45 | WARNING | Invalid currency at row 7: '' (must be a valid 3-letter code)
+2025-05-31 16:25:45 | WARNING | Invalid currency at row 8: 'nan' (must be a valid 3-letter code)
+2025-05-31 16:25:45 | INFO | Visit data validation complete.
+2025-05-31 16:28:38 | INFO | Loaded patient data:
+2025-05-31 16:28:38 | INFO | Moved ICD code 'Z00' to 'icd_code' from row 7
+2025-05-31 16:28:38 | INFO | Moved ICD code 'Z00' to 'icd_code' from row 8
+2025-05-31 16:28:38 | WARNING | Invalid billable amount at row 7: 'USD' (set to NaN)
+2025-05-31 16:28:38 | WARNING | Invalid billable amount at row 8: 'USD' (set to NaN)
+2025-05-31 16:28:38 | CRITICAL | Visit data validation failed: 'float' object has no attribute 'lower'
+2025-05-31 16:29:42 | INFO | Loaded patient data:
+2025-05-31 16:29:42 | INFO | Moved ICD code 'Z00' to 'icd_code' from row 7
+2025-05-31 16:29:42 | INFO | Moved ICD code 'Z00' to 'icd_code' from row 8
+2025-05-31 16:29:42 | WARNING | Swapped values at row 7: Moved 'USD' to currency and cleared billable_amount.
+2025-05-31 16:29:42 | WARNING | Swapped values at row 8: Moved 'USD' to currency and cleared billable_amount.
+2025-05-31 16:29:42 | WARNING | Invalid date in column 'visit_date' at row 6: '01-23-2024' (unrecognized format)
+2025-05-31 16:29:42 | WARNING | Missing or unknown location at row 3: 'Unknown'
+2025-05-31 16:29:42 | WARNING | Missing or unknown location at row 7: 'nan'
+2025-05-31 16:29:42 | WARNING | Missing or unknown location at row 13: 'nan'
+2025-05-31 16:29:42 | WARNING | Missing reason_for_visit at row 13: 'nan'
+2025-05-31 16:29:42 | WARNING | Invalid visit_status at row 7: 'nan' (not in {'In Progress', 'Open', 'Completed', 'Cancelled', 'Scheduled'})
+2025-05-31 16:29:42 | WARNING | Invalid visit_status at row 8: 'nan' (not in {'In Progress', 'Open', 'Completed', 'Cancelled', 'Scheduled'})
+2025-05-31 16:29:42 | INFO | Visit data validation complete.
+2025-05-31 16:33:40 | INFO | Loaded patient data:
+2025-05-31 16:33:40 | INFO | Moved ICD code 'Z00' to 'icd_code' from row 7
+2025-05-31 16:33:40 | INFO | Moved ICD code 'Z00' to 'icd_code' from row 8
+2025-05-31 16:33:40 | WARNING | Swapped values at row 7: Moved 'USD' to currency and cleared billable_amount.
+2025-05-31 16:33:40 | WARNING | Swapped values at row 8: Moved 'USD' to currency and cleared billable_amount.
+2025-05-31 16:33:40 | WARNING | Invalid date in column 'visit_date' at row 6: '01-23-2024' (unrecognized format)
+2025-05-31 16:33:40 | WARNING | Missing or unknown location at row 3: 'Unknown'
+2025-05-31 16:33:40 | WARNING | Missing or unknown location at row 7: 'nan'
+2025-05-31 16:33:40 | WARNING | Missing or unknown location at row 13: 'nan'
+2025-05-31 16:33:40 | WARNING | Missing reason_for_visit at row 13: 'nan'
+2025-05-31 16:33:40 | WARNING | Invalid visit_status at row 7: 'nan' (not in {'In Progress', 'Cancelled', 'Scheduled', 'Open', 'Completed'})
+2025-05-31 16:33:40 | WARNING | Invalid visit_status at row 8: 'nan' (not in {'In Progress', 'Cancelled', 'Scheduled', 'Open', 'Completed'})
+2025-05-31 16:33:40 | INFO | Billable amount column validation and formatting complete.
+2025-05-31 16:33:40 | INFO | Visit data validation complete.

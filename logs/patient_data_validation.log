@@ -1,0 +1,56 @@
+2025-05-31 16:16:21 | INFO | Loaded patient data:
+2025-05-31 16:16:21 | INFO | Patient ID validation complete.
+2025-05-31 16:16:21 | WARNING | Missing name in column 'first_name' at row 3: 'nan' (set to NaN)
+2025-05-31 16:16:21 | WARNING | Banned name in column 'first_name' at row 6: 'Invalid' (replaced with NaN)
+2025-05-31 16:16:21 | INFO | first_name validation complete.
+2025-05-31 16:16:21 | WARNING | Banned name in column 'last_name' at row 6: 'DOB' (replaced with NaN)
+2025-05-31 16:16:21 | INFO | last_name validation complete.
+2025-05-31 16:16:21 | WARNING | Invalid date_of_birth at row 5: '1990/02/30' (unrecognized or invalid date)
+2025-05-31 16:16:21 | WARNING | Invalid date_of_birth at row 6: ' 1985-13-99' (unrecognized or invalid date)
+2025-05-31 16:16:21 | INFO | Date of birth validation and formatting complete.
+2025-05-31 16:16:21 | INFO | Gender column validation complete.
+2025-05-31 16:16:21 | WARNING | Invalid address at row 5: 'nan' (must be string, ≥5 chars, start with letter/number)
+2025-05-31 16:16:21 | WARNING | Invalid address at row 6: 'nan' (must be string, ≥5 chars, start with letter/number)
+2025-05-31 16:16:21 | INFO | Address column validation complete.
+2025-05-31 16:16:21 | INFO | City column validation complete.
+2025-05-31 16:16:21 | WARNING | Invalid state at row 1: 'nan' (not a valid US state abbreviation)
+2025-05-31 16:16:21 | WARNING | Invalid state at row 4: 'MX' (not a valid US state abbreviation)
+2025-05-31 16:16:21 | WARNING | Invalid state at row 5: 'nan' (not a valid US state abbreviation)
+2025-05-31 16:16:21 | WARNING | Invalid state at row 6: '??' (not a valid US state abbreviation)
+2025-05-31 16:16:21 | INFO | State column validation complete.
+2025-05-31 16:16:21 | WARNING | Invalid ZIP code at row 2: 'nan' → 'nan' (must be 5 digits or ZIP+4 format)
+2025-05-31 16:16:21 | WARNING | Invalid ZIP code at row 5: 'nan' → 'nan' (must be 5 digits or ZIP+4 format)
+2025-05-31 16:16:21 | WARNING | Invalid ZIP code at row 6: 'nan' → 'nan' (must be 5 digits or ZIP+4 format)
+2025-05-31 16:16:21 | INFO | ZIP code column validation complete.
+2025-05-31 16:16:21 | INFO | Phone column validation and formatting complete.
+2025-05-31 16:16:21 | INFO | Insurance ID column validation complete.
+2025-05-31 16:16:21 | INFO | Insurance effective date column validation and formatting complete.
+2025-05-31 16:16:21 | INFO | Data validation complete.
+2025-05-31 16:17:58 | INFO | Loaded patient data:
+2025-05-31 16:17:58 | INFO | Patient ID validation complete.
+2025-05-31 16:17:58 | WARNING | Missing name in column 'first_name' at row 3: 'nan' (set to NaN)
+2025-05-31 16:17:58 | WARNING | Banned name in column 'first_name' at row 6: 'Invalid' (replaced with NaN)
+2025-05-31 16:17:58 | INFO | first_name validation complete.
+2025-05-31 16:17:58 | WARNING | Banned name in column 'last_name' at row 6: 'DOB' (replaced with NaN)
+2025-05-31 16:17:58 | INFO | last_name validation complete.
+2025-05-31 16:17:58 | WARNING | Invalid date_of_birth at row 5: '1990/02/30' (unrecognized or invalid date)
+2025-05-31 16:17:58 | WARNING | Invalid date_of_birth at row 6: ' 1985-13-99' (unrecognized or invalid date)
+2025-05-31 16:17:58 | INFO | Date of birth validation and formatting complete.
+2025-05-31 16:17:58 | INFO | Gender column validation complete.
+2025-05-31 16:17:58 | WARNING | Invalid address at row 5: 'nan' (must be string, ≥5 chars, start with letter/number)
+2025-05-31 16:17:58 | WARNING | Invalid address at row 6: 'nan' (must be string, ≥5 chars, start with letter/number)
+2025-05-31 16:17:58 | INFO | Address column validation complete.
+2025-05-31 16:17:58 | INFO | City column validation complete.
+2025-05-31 16:17:58 | WARNING | Invalid state at row 1: 'nan' (not a valid US state abbreviation)
+2025-05-31 16:17:58 | WARNING | Invalid state at row 4: 'MX' (not a valid US state abbreviation)
+2025-05-31 16:17:58 | WARNING | Invalid state at row 5: 'nan' (not a valid US state abbreviation)
+2025-05-31 16:17:58 | WARNING | Invalid state at row 6: '??' (not a valid US state abbreviation)
+2025-05-31 16:17:58 | INFO | State column validation complete.
+2025-05-31 16:17:58 | WARNING | Invalid ZIP code at row 2: 'nan' → 'nan' (must be 5 digits or ZIP+4 format)
+2025-05-31 16:17:58 | WARNING | Invalid ZIP code at row 5: 'nan' → 'nan' (must be 5 digits or ZIP+4 format)
+2025-05-31 16:17:58 | WARNING | Invalid ZIP code at row 6: 'nan' → 'nan' (must be 5 digits or ZIP+4 format)
+2025-05-31 16:17:58 | INFO | ZIP code column validation complete.
+2025-05-31 16:17:58 | INFO | Phone column validation and formatting complete.
+2025-05-31 16:17:58 | INFO | Insurance ID column validation complete.
+2025-05-31 16:17:58 | INFO | Insurance effective date column validation and formatting complete.
+2025-05-31 16:17:58 | INFO | Data validation complete.
