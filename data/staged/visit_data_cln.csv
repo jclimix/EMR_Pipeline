@@ -1,0 +1,15 @@
+visit_id,patient_id,provider_id,visit_date,location,reason_for_visit,icd_code,visit_status,billable_amount,currency,follow_up_date
+V1001,P001,PR001,2024-01-15,Atlanta - Midtown,Cold symptoms,J00,Completed,100.00,USD,
+V1002,P002,PR002,2024-01-16,NYC - 14th St,Cough,R05,Completed,150.00,USD,2024-01-25
+V1003,P003,PR003,2024-01-17,Atlanta - Downtown,Flu,J09,Completed,250.00,USD,2024-01-26
+V1004,P999,PR001,2024-01-20,,Headache,R51,In Progress,60.00,USD,
+V1005,P005,PR010,2024-01-20,Mexico City - Centro,Fever,R50,Cancelled,199.99,MXN,
+V1006,P006,,2024-01-21,Atlanta - Buckhead,Sore throat,J02,Completed,79.99,USD,
+V1007,P001,PR004,2024-01-23,Atlanta - Midtown,Injury,S90,Completed,0.00,USD,2024-02-10
+V1008,P007,PR009,2024-01-24,,Check-up,Z00,,,USD,
+V1009,P004,PR001,2024-01-25,Atlanta - East,Routine exam,Z00,,,USD,
+V1010,P005,PR010,2024-01-25,Mexico City - Centro,Rash,L29,Completed,250.00,MXN,2024-02-01
+V1011,P002,PR002,2024-01-28,NYC - Broadway,Follow-up,,Completed,120.00,USD,
+V1012,P003,PR004,2024-02-25,Atlanta - Downtown,Asthma,J45,Completed,0.00,JPY,
+V1013,P004,PR999,2024-02-01,Atlanta - Unknown,Ear pain,H92,Cancelled,60.00,USD,
+V1014,P001,PR004,2024-02-03,,,,Scheduled,40.00,USD,

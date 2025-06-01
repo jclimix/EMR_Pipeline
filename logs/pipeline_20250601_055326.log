@@ -1,0 +1,69 @@
+2025-06-01 05:53:26 | INFO | Starting ETL pipeline.
+2025-06-01 05:53:26 | INFO | Starting extraction phase.
+2025-06-01 05:53:26 | INFO | Extraction completed successfully.
+2025-06-01 05:53:26 | INFO | Starting transformation phase.
+2025-06-01 05:53:26 | INFO | Patient ID validation complete.
+2025-06-01 05:53:26 | WARNING | Missing name in column 'first_name' at row 3: 'nan' (set to NaN)
+2025-06-01 05:53:26 | WARNING | Banned name in column 'first_name' at row 6: 'Invalid' (replaced with NaN)
+2025-06-01 05:53:26 | INFO | first_name validation complete.
+2025-06-01 05:53:26 | WARNING | Banned name in column 'last_name' at row 6: 'DOB' (replaced with NaN)
+2025-06-01 05:53:26 | INFO | last_name validation complete.
+2025-06-01 05:53:26 | WARNING | Invalid date in column 'date_of_birth' at row 5: '1990/02/30' (unrecognized format)
+2025-06-01 05:53:26 | WARNING | Invalid date in column 'date_of_birth' at row 6: ' 1985-13-99' (unrecognized format)
+2025-06-01 05:53:26 | INFO | Date of birth validation complete.
+2025-06-01 05:53:26 | INFO | Gender column validation complete.
+2025-06-01 05:53:26 | WARNING | Invalid address at row 5: 'nan' (must be string, ≥5 chars, start with letter/number)
+2025-06-01 05:53:26 | WARNING | Invalid address at row 6: 'nan' (must be string, ≥5 chars, start with letter/number)
+2025-06-01 05:53:26 | INFO | Address column validation complete.
+2025-06-01 05:53:26 | WARNING | Invalid city at row 3: 'Unknown' (must start with a letter and contain only letters, spaces, or hyphens)
+2025-06-01 05:53:26 | WARNING | Invalid city at row 6: 'Unknown' (must start with a letter and contain only letters, spaces, or hyphens)
+2025-06-01 05:53:26 | INFO | City column validation complete.
+2025-06-01 05:53:26 | WARNING | Invalid state at row 1: 'nan' (not a valid US state abbreviation)
+2025-06-01 05:53:26 | WARNING | Invalid state at row 4: 'MX' (not a valid US state abbreviation)
+2025-06-01 05:53:26 | WARNING | Invalid state at row 5: 'nan' (not a valid US state abbreviation)
+2025-06-01 05:53:26 | WARNING | Invalid state at row 6: '??' (not a valid US state abbreviation)
+2025-06-01 05:53:26 | INFO | State column validation complete.
+2025-06-01 05:53:26 | WARNING | Invalid ZIP code at row 2: 'nan' → 'nan' (must be 5 digits or ZIP+4 format)
+2025-06-01 05:53:26 | WARNING | Invalid ZIP code at row 5: 'nan' → 'nan' (must be 5 digits or ZIP+4 format)
+2025-06-01 05:53:26 | WARNING | Invalid ZIP code at row 6: 'nan' → 'nan' (must be 5 digits or ZIP+4 format)
+2025-06-01 05:53:26 | INFO | ZIP code column validation complete.
+2025-06-01 05:53:26 | INFO | Phone column validation and formatting complete.
+2025-06-01 05:53:26 | INFO | Insurance ID column validation complete.
+2025-06-01 05:53:26 | INFO | Insurance effective date validation complete.
+2025-06-01 05:53:26 | INFO | Data validation complete.
+2025-06-01 05:53:26 | INFO | Data staged to data/staged/patient_data_cln.csv
+2025-06-01 05:53:26 | INFO | Moved ICD code 'Z00' to 'icd_code' from row 7
+2025-06-01 05:53:26 | INFO | Moved ICD code 'Z00' to 'icd_code' from row 8
+2025-06-01 05:53:26 | WARNING | Swapped values at row 7: Moved 'USD' to currency and cleared billable_amount.
+2025-06-01 05:53:26 | WARNING | Swapped values at row 8: Moved 'USD' to currency and cleared billable_amount.
+2025-06-01 05:53:26 | INFO | Visit date validation complete.
+2025-06-01 05:53:26 | WARNING | Missing or unknown location at row 3: 'Unknown'
+2025-06-01 05:53:26 | WARNING | Missing or unknown location at row 7: 'nan'
+2025-06-01 05:53:26 | WARNING | Missing or unknown location at row 13: 'nan'
+2025-06-01 05:53:26 | WARNING | Missing reason_for_visit at row 13: 'nan'
+2025-06-01 05:53:26 | WARNING | Invalid visit_status at row 7: 'nan' (not in {'Cancelled', 'Open', 'Completed', 'Scheduled', 'In Progress'})
+2025-06-01 05:53:26 | WARNING | Invalid visit_status at row 8: 'nan' (not in {'Cancelled', 'Open', 'Completed', 'Scheduled', 'In Progress'})
+2025-06-01 05:53:26 | INFO | Billable amount column validation and formatting complete.
+2025-06-01 05:53:26 | INFO | Follow up date validation complete.
+2025-06-01 05:53:26 | INFO | Data validation complete.
+2025-06-01 05:53:26 | INFO | Data staged to data/staged/visit_data_cln.csv
+2025-06-01 05:53:26 | INFO | Visit ID column validation complete.
+2025-06-01 05:53:26 | INFO | Visit name column validation complete.
+2025-06-01 05:53:26 | WARNING | Invalid test value at row 2: 'Invalid' (not numeric or allowed text — set to NaN)
+2025-06-01 05:53:26 | WARNING | Missing test value at row 6: 'nan' (set to NaN)
+2025-06-01 05:53:26 | INFO | Test value column validation complete.
+2025-06-01 05:53:26 | WARNING | Missing test unit at row 2 for numeric value 'nan'
+2025-06-01 05:53:26 | INFO | Test unit validation complete.
+2025-06-01 05:53:26 | INFO | Reference range validation complete.
+2025-06-01 05:53:26 | INFO | Date performed validation complete.
+2025-06-01 05:53:26 | INFO | Date resulted validation complete.
+2025-06-01 05:53:26 | INFO | Data validation complete.
+2025-06-01 05:53:26 | INFO | Data staged to data/staged/lab_results_cln.csv
+2025-06-01 05:53:26 | INFO | Effective date validation complete.
+2025-06-01 05:53:26 | INFO | Data validation complete.
+2025-06-01 05:53:26 | INFO | Data staged to data/staged/icd_reference_cln.csv
+2025-06-01 05:53:26 | INFO | Transformation completed successfully.
+2025-06-01 05:53:26 | INFO | Starting load phase.
+2025-06-01 05:53:26 | INFO | Data successfully loaded into the database!
+2025-06-01 05:53:26 | INFO | Load completed successfully.
+2025-06-01 05:53:26 | INFO | ETL pipeline completed successfully.

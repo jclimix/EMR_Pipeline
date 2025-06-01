@@ -1,0 +1,12 @@
+icd_code,description,effective_date,status
+J00,Acute nasopharyngitis (common cold),2020-10-01,Active
+R05,Cough,2021-01-01,Active
+J09,Influenza due to identified novel influenza A virus,2019-10-01,Inactive
+R51,Headache,2021-03-01,Active
+R50,Fever,2020-01-01,Active
+J02,Acute pharyngitis,2022-05-01,Active
+S90,Superficial injury of ankle,2023-01-01,Active
+Z00,Encounter for general examination,2020-05-01,Active
+L29,Pruritus,2021-06-01,Active
+J45,Asthma,2018-01-01,Active
+H92,Otalgia (ear pain),2022-09-15,Active

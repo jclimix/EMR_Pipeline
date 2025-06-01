@@ -2,39 +2,22 @@ import sys, os, re
 import pandas as pd
 import numpy as np
 from loguru import logger
-from datetime import datetime
-
-# Ensure logs directory exists
-os.makedirs('logs', exist_ok=True)
-
-# Set up Loguru logger
-logger.remove()
-
-# File logger (plain format)
-logger.add("logs/patient_data_validation.log", level="INFO", format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}")
-
-# Terminal logger (bold + colored)
-logger.add(sys.stdout, level="INFO", format=(
-    "\033[1m<green>{time:YYYY-MM-DD HH:mm:ss}</green>\033[0m | "
-    "\033[1m<level>{level}</level>\033[0m | "
-    "\033[1m<cyan>{message}</cyan>\033[0m"
-))
 
 # Allow imports from project root
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utils.clean_csv import clean_csv
 
-# Load data
-file = "patient_data.csv"
-directory = "data/raw/"
-df = clean_csv(directory, file)
+from utils.helpers import *
+from utils.logger_setup import configure_logger
 
-logger.info("Loaded patient data:")
-print(df)
-
-# ---- VALIDATION FUNCTIONS ---- #
+# Swap INFO with DEBUG to preview loaded data
+# Leave as INFO to prevent patient data from being logged
+logger = configure_logger(f"logs/patient_data_validation.log", "DEBUG")
 
 def validate_patient_id(df):
+    """
+    Validate the 'patient_id' column to ensure each ID starts with a letter followed by digits.
+    Invalid entries are logged and set to NaN.
+    """
     pattern = r'^[A-Za-z]\d+$'
     invalid_mask = ~df['patient_id'].astype(str).str.fullmatch(pattern)
     for idx, val in df[invalid_mask]['patient_id'].items():
@@ -42,7 +25,11 @@ def validate_patient_id(df):
         df.at[idx, 'patient_id'] = np.nan
     logger.info("Patient ID validation complete.")
 
-def validate_name_columns(df, columns=['first_name', 'last_name'], banned_words=None):
+def validate_names(df, columns=['first_name', 'last_name'], banned_words=None):
+    """
+    Validate name columns to ensure they follow proper capitalization and character rules.
+    Flags banned words and invalid/missing values, then replaces them with NaN.
+    """
     pattern = r'^[A-ZÀ-ÖØ-Ý][a-zA-Zà-öø-ÿĀ-žĀ-ſ]{1,}$'
     banned_words = set(word.lower() for word in (banned_words or ['invalid', 'dob', 'name', 'firstname', 'lastname']))
 
@@ -63,44 +50,46 @@ def validate_name_columns(df, columns=['first_name', 'last_name'], banned_words=
 
         logger.info(f"{col} validation complete.")
 
-def validate_and_format_dob(df, date_column='date_of_birth'):
-    formats = ["%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%d.%m.%Y", "%d-%m-%Y", "%m.%d.%Y"]
-
-    def try_parse(val, idx):
-        for fmt in formats:
-            try:
-                return datetime.strptime(val.strip(), fmt).strftime("%Y-%m-%d")
-            except ValueError:
-                continue
-        logger.warning(f"Invalid date_of_birth at row {idx}: '{val}' (unrecognized or invalid date)")
-        return np.nan
-
-    df[date_column] = [try_parse(val, idx) for idx, val in df[date_column].astype(str).items()]
-    logger.info("Date of birth validation and formatting complete.")
-
-def validate_gender_column(df, column='gender'):
+def validate_gender(df, column='gender'):
+    """
+    Validate the 'gender' column to ensure each value is a single-character string (e.g., 'M', 'F').
+    Invalid values are logged and set to NaN.
+    """
     for idx, val in df[column].items():
         if not isinstance(val, str) or len(val.strip()) != 1:
             logger.warning(f"Invalid gender at row {idx}: '{val}' (not a single-character string)")
             df.at[idx, column] = np.nan
     logger.info("Gender column validation complete.")
 
-def validate_address_column(df, column='address'):
+def validate_address(df, column='address'):
+    """
+    Validate the 'address' column to ensure it's a string of at least 5 characters
+    and starts with a letter or number. Invalid entries are logged and set to NaN.
+    """
     for idx, val in df[column].items():
         if not isinstance(val, str) or len(val.strip()) < 5 or not re.match(r'^[A-Za-z0-9]', val.strip()):
             logger.warning(f"Invalid address at row {idx}: '{val}' (must be string, ≥5 chars, start with letter/number)")
             df.at[idx, column] = np.nan
     logger.info("Address column validation complete.")
 
-def validate_city_column(df, column='city'):
+def validate_city(df, column='city'):
+    """
+    Validate the 'city' column to ensure values start with a letter and contain only
+    letters, spaces, or hyphens. Invalid entries including 'unknown' are logged and replaced with NaN.
+    """
     pattern = r'^[A-Za-z][A-Za-z\s\-]{1,}$'
     for idx, val in df[column].astype(str).items():
-        if not re.fullmatch(pattern, val.strip()):
+        val_lower = val.lower().strip()
+        if val_lower == 'unknown' or not re.fullmatch(pattern, val.strip()):
             logger.warning(f"Invalid city at row {idx}: '{val}' (must start with a letter and contain only letters, spaces, or hyphens)")
             df.at[idx, column] = np.nan
     logger.info("City column validation complete.")
 
-def validate_state_column(df, column='state'):
+def validate_state(df, column='state'):
+    """
+    Validate the 'state' column to ensure each value is a valid US state abbreviation.
+    Non-matching values are logged and set to NaN.
+    """
     valid_states = {
         'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
         'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
@@ -115,7 +104,11 @@ def validate_state_column(df, column='state'):
             df.at[idx, column] = np.nan
     logger.info("State column validation complete.")
 
-def validate_zip_code_column(df, column='zip'):
+def validate_zip_code(df, column='zip'):
+    """
+    Validate and format the 'zip' column to be 5 digits or ZIP+4 format (e.g., 12345 or 12345-6789).
+    Pads 4-digit zip codes with leading zeros. Invalid formats are logged and set to NaN.
+    """
     pattern = r'^\d{5}(-\d{4})?$'
     df[column] = df[column].astype(str)
 
@@ -136,20 +129,20 @@ def validate_zip_code_column(df, column='zip'):
 
     logger.info("ZIP code column validation complete.")
 
-def validate_phone_column(df, column='phone'):
-    pattern = r'^\(\d{3}\)\s\d{3}-\d{4}$'
-
+def validate_phone(df, column='phone'):
+    """
+    Validate and format the 'phone' column into (XXX) XXX-XXXX format.
+    Accepts various formats, extracts digits, and reformats where possible.
+    Invalid or malformed numbers are logged and replaced with NaN.
+    """
     for idx, val in df[column].astype(str).items():
         raw = val.strip()
 
-        # Skip if already NaN
         if pd.isna(df.at[idx, column]) or raw.lower() in ['nan', '', 'none']:
             continue
 
-        # Extract digits only
         digits = re.sub(r'\D', '', raw)
 
-        # Format if it's 10 digits
         if len(digits) == 10:
             formatted = f"({digits[:3]}) {digits[3:6]}-{digits[6:]}"
             df.at[idx, column] = formatted
@@ -159,7 +152,11 @@ def validate_phone_column(df, column='phone'):
 
     logger.info("Phone column validation and formatting complete.")
 
-def validate_insurance_id_column(df, column='insurance_id'):
+def validate_insurance_id(df, column='insurance_id'):
+    """
+    Validate the 'insurance_id' column to ensure each value consists of 3 letters followed by 3 digits.
+    Invalid entries are logged and replaced with NaN.
+    """
     pattern = r'^[A-Za-z]{3}\d{3}$'
 
     for idx, val in df[column].astype(str).items():
@@ -174,48 +171,37 @@ def validate_insurance_id_column(df, column='insurance_id'):
 
     logger.info("Insurance ID column validation complete.")
 
-def validate_insurance_effective_date_column(df, column='insurance_effective_date'):
-    formats = [
-        "%Y-%m-%d", "%Y/%m/%d", "%Y.%m.%d",  # ISO-like formats
-        "%m/%d/%Y", "%m.%d.%Y",              # U.S. formats
-        "%d-%m-%Y", "%d.%m.%Y"               # European formats
-    ]
-
-    def try_parse(val, idx):
-        if pd.isna(val) or str(val).strip().lower() in ['nan', '', 'none']:
-            return np.nan
-        for fmt in formats:
-            try:
-                return datetime.strptime(val.strip(), fmt).strftime("%Y-%m-%d")
-            except ValueError:
-                continue
-        logger.warning(f"Invalid insurance effective date at row {idx}: '{val}' (unrecognized format)")
-        return np.nan
-
-    df[column] = [try_parse(val, idx) for idx, val in df[column].astype(str).items()]
-    logger.info("Insurance effective date column validation and formatting complete.")
-
-# ---- RUN VALIDATION ---- #
-
-if __name__ == '__main__':
+def transform_patient_data(df):
+    """
+    Run all validation functions on the patient DataFrame and output a cleaned version.
+    Saves the staged file to the data/staged/ directory and logs progress or failure.
+    """
     try:
         validate_patient_id(df)
-        validate_name_columns(df)
-        validate_and_format_dob(df)
-        validate_gender_column(df)
-        validate_address_column(df)
-        validate_city_column(df)
-        validate_state_column(df)
-        validate_zip_code_column(df)
-        validate_phone_column(df)
-        validate_insurance_id_column(df)
-        validate_insurance_effective_date_column(df)
+        validate_names(df)
+        validate_date(df, "date_of_birth")
+        validate_gender(df)
+        validate_address(df)
+        validate_city(df)
+        validate_state(df)
+        validate_zip_code(df)
+        validate_phone(df)
+        validate_insurance_id(df)
+        validate_date(df, "insurance_effective_date")
 
         logger.info("Data validation complete.")
-        print("Cleaned DataFrame:")
-        print(df)
-        df.to_csv('data/staged/patient_data_cln.csv', index=False)
+        logger.debug("Cleaned DataFrame (preview):")
+        logger.debug(df)
+        staged_dir = "data/staged/"
+        staged_filename = "patient_data_cln.csv"
+        staged_path = os.path.join(staged_dir, staged_filename)
+        df.to_csv(staged_path, index=False)
+        logger.info(f"Data staged to {staged_path}")
 
     except Exception as e:
         logger.critical(f"Data validation failed unexpectedly: {e}")
         sys.exit(1)
+
+if __name__ == '__main__':
+    df = load_csv("patient_data.csv")
+    transform_patient_data(df)
