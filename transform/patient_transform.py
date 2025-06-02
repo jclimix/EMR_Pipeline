@@ -19,10 +19,15 @@ def validate_patient_id(df):
     Invalid entries are logged and set to NaN.
     """
     pattern = r'^[A-Za-z]\d+$'
-    invalid_mask = ~df['patient_id'].astype(str).str.fullmatch(pattern)
-    for idx, val in df[invalid_mask]['patient_id'].items():
-        logger.warning(f"Invalid value in column 'patient_id' at row {idx}: '{val}' (invalid format)")
-        df.at[idx, 'patient_id'] = np.nan
+    for idx, val in df['patient_id'].items():
+        if is_invalid_value(val):
+            logger.warning(f"Invalid value in column 'patient_id' at row {idx}: '{val}' (empty or invalid)")
+            df.at[idx, 'patient_id'] = pd.NA
+            continue
+            
+        if not re.fullmatch(pattern, str(val).strip()):
+            logger.warning(f"Invalid value in column 'patient_id' at row {idx}: '{val}' (invalid format)")
+            df.at[idx, 'patient_id'] = pd.NA
     logger.info("Patient ID validation complete.")
 
 def validate_names(df, columns=['first_name', 'last_name'], banned_words=None):
@@ -34,31 +39,46 @@ def validate_names(df, columns=['first_name', 'last_name'], banned_words=None):
     banned_words = set(word.lower() for word in (banned_words or ['invalid', 'dob', 'name', 'firstname', 'lastname']))
 
     for col in columns:
-        col_series = df[col].astype(str)
-        for idx, val in col_series.items():
-            original_val = val
-            val_lower = val.lower().strip()
+        for idx, val in df[col].items():
+            if is_invalid_value(val):
+                logger.warning(f"Invalid name in column '{col}' at row {idx}: '{val}' (empty or invalid)")
+                df.at[idx, col] = pd.NA
+                continue
 
-            if pd.isna(df.at[idx, col]) or val_lower in ['nan', '', 'none']:
-                logger.warning(f"Missing name in column '{col}' at row {idx}: '{original_val}' (set to NaN)")
-                df.at[idx, col] = np.nan
-            elif val_lower in banned_words:
-                logger.warning(f"Banned name in column '{col}' at row {idx}: '{original_val}' (replaced with NaN)")
-                df.at[idx, col] = np.nan
-            elif not re.fullmatch(pattern, val.strip()):
-                logger.warning(f"Invalid name format in column '{col}' at row {idx}: '{original_val}' (invalid format)")
+            val_str = str(val).strip()
+            val_lower = val_str.lower()
+
+            if val_lower in banned_words:
+                logger.warning(f"Banned name in column '{col}' at row {idx}: '{val}' (replaced with NaN)")
+                df.at[idx, col] = pd.NA
+            elif not re.fullmatch(pattern, val_str):
+                logger.warning(f"Invalid name format in column '{col}' at row {idx}: '{val}' (invalid format)")
+                df.at[idx, col] = pd.NA
 
         logger.info(f"{col} validation complete.")
 
 def validate_gender(df, column='gender'):
     """
-    Validate the 'gender' column to ensure each value is a single-character string (e.g., 'M', 'F').
+    Validate the 'gender' column to ensure each value is either 'M' or 'F'.
+    Accepts and converts full strings like 'male' or 'female'.
     Invalid values are logged and set to NaN.
     """
     for idx, val in df[column].items():
-        if not isinstance(val, str) or len(val.strip()) != 1:
-            logger.warning(f"Invalid gender at row {idx}: '{val}' (not a single-character string)")
-            df.at[idx, column] = np.nan
+        if is_invalid_value(val):
+            logger.warning(f"Invalid gender at row {idx}: '{val}' (empty or invalid)")
+            df.at[idx, column] = pd.NA
+            continue
+
+        val_str = str(val).strip().lower()
+
+        if val_str in ['m', 'male']:
+            df.at[idx, column] = 'M'
+        elif val_str in ['f', 'female']:
+            df.at[idx, column] = 'F'
+        else:
+            logger.warning(f"Invalid gender at row {idx}: '{val}' (not M/F/male/female)")
+            df.at[idx, column] = pd.NA
+
     logger.info("Gender column validation complete.")
 
 def validate_address(df, column='address'):
@@ -67,9 +87,15 @@ def validate_address(df, column='address'):
     and starts with a letter or number. Invalid entries are logged and set to NaN.
     """
     for idx, val in df[column].items():
-        if not isinstance(val, str) or len(val.strip()) < 5 or not re.match(r'^[A-Za-z0-9]', val.strip()):
+        if is_invalid_value(val):
+            logger.warning(f"Invalid address at row {idx}: '{val}' (empty or invalid)")
+            df.at[idx, column] = pd.NA
+            continue
+            
+        val_str = str(val).strip()
+        if len(val_str) < 5 or not re.match(r'^[A-Za-z0-9]', val_str):
             logger.warning(f"Invalid address at row {idx}: '{val}' (must be string, ≥5 chars, start with letter/number)")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
     logger.info("Address column validation complete.")
 
 def validate_city(df, column='city'):
@@ -78,11 +104,17 @@ def validate_city(df, column='city'):
     letters, spaces, or hyphens. Invalid entries including 'unknown' are logged and replaced with NaN.
     """
     pattern = r'^[A-Za-z][A-Za-z\s\-]{1,}$'
-    for idx, val in df[column].astype(str).items():
-        val_lower = val.lower().strip()
-        if val_lower == 'unknown' or not re.fullmatch(pattern, val.strip()):
+    for idx, val in df[column].items():
+        if is_invalid_value(val):
+            logger.warning(f"Invalid city at row {idx}: '{val}' (empty or invalid)")
+            df.at[idx, column] = pd.NA
+            continue
+            
+        val_str = str(val).strip()
+        val_lower = val_str.lower()
+        if val_lower == 'unknown' or not re.fullmatch(pattern, val_str):
             logger.warning(f"Invalid city at row {idx}: '{val}' (must start with a letter and contain only letters, spaces, or hyphens)")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
     logger.info("City column validation complete.")
 
 def validate_state(df, column='state'):
@@ -98,10 +130,16 @@ def validate_state(df, column='state'):
         'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
     }
 
-    for idx, val in df[column].astype(str).str.strip().items():
-        if val.upper() not in valid_states:
+    for idx, val in df[column].items():
+        if is_invalid_value(val):
+            logger.warning(f"Invalid state at row {idx}: '{val}' (empty or invalid)")
+            df.at[idx, column] = pd.NA
+            continue
+            
+        val_str = str(val).strip().upper()
+        if val_str not in valid_states:
             logger.warning(f"Invalid state at row {idx}: '{val}' (not a valid US state abbreviation)")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
     logger.info("State column validation complete.")
 
 def validate_zip_code(df, column='zip'):
@@ -110,22 +148,27 @@ def validate_zip_code(df, column='zip'):
     Pads 4-digit zip codes with leading zeros. Invalid formats are logged and set to NaN.
     """
     pattern = r'^\d{5}(-\d{4})?$'
-    df[column] = df[column].astype(str)
+    
+    df[column] = df[column].astype("string")
 
     for idx, val in df[column].items():
-        val_str = val.strip()
+        if is_invalid_value(val):
+            logger.warning(f"Invalid ZIP code at row {idx}: '{val}' (empty or invalid)")
+            df.at[idx, column] = pd.NA
+            continue
+
+        val_str = str(val).strip()
 
         if re.fullmatch(r'^\d+\.0$', val_str):
             val_str = val_str.split('.')[0]
 
         if val_str.isdigit() and len(val_str) < 5:
-            val_str = val_str.zfill(5)
-
-        if not re.fullmatch(pattern, val_str):
+            df.at[idx, column] = pd.NA
+        elif not re.fullmatch(pattern, val_str):
             logger.warning(f"Invalid ZIP code at row {idx}: '{val}' → '{val_str}' (must be 5 digits or ZIP+4 format)")
-            val_str = np.nan
-
-        df.at[idx, column] = val_str
+            df.at[idx, column] = pd.NA
+        else:
+            df.at[idx, column] = val_str
 
     logger.info("ZIP code column validation complete.")
 
@@ -135,20 +178,21 @@ def validate_phone(df, column='phone'):
     Accepts various formats, extracts digits, and reformats where possible.
     Invalid or malformed numbers are logged and replaced with NaN.
     """
-    for idx, val in df[column].astype(str).items():
-        raw = val.strip()
-
-        if pd.isna(df.at[idx, column]) or raw.lower() in ['nan', '', 'none']:
+    for idx, val in df[column].items():
+        if is_invalid_value(val):
+            logger.warning(f"Invalid phone number at row {idx}: '{val}' (empty or invalid)")
+            df.at[idx, column] = pd.NA
             continue
-
-        digits = re.sub(r'\D', '', raw)
+            
+        val_str = str(val).strip()
+        digits = re.sub(r'\D', '', val_str)
 
         if len(digits) == 10:
             formatted = f"({digits[:3]}) {digits[3:6]}-{digits[6:]}"
             df.at[idx, column] = formatted
         else:
             logger.warning(f"Invalid phone number at row {idx}: '{val}' (could not reformat or invalid length)")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
 
     logger.info("Phone column validation and formatting complete.")
 
@@ -159,15 +203,16 @@ def validate_insurance_id(df, column='insurance_id'):
     """
     pattern = r'^[A-Za-z]{3}\d{3}$'
 
-    for idx, val in df[column].astype(str).items():
-        raw = val.strip()
-
-        if pd.isna(df.at[idx, column]) or raw.lower() in ['nan', '', 'none']:
+    for idx, val in df[column].items():
+        if is_invalid_value(val):
+            logger.warning(f"Invalid insurance ID at row {idx}: '{val}' (empty or invalid)")
+            df.at[idx, column] = pd.NA
             continue
-
-        if not re.fullmatch(pattern, raw):
+            
+        val_str = str(val).strip()
+        if not re.fullmatch(pattern, val_str):
             logger.warning(f"Invalid insurance ID at row {idx}: '{val}' (must match pattern: 3 letters followed by 3 digits)")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
 
     logger.info("Insurance ID column validation complete.")
 

@@ -23,7 +23,7 @@ def validate_visit_id(df, column='visit_id'):
     for idx, val in df[column].astype(str).items():
         if not re.fullmatch(pattern, val.strip()):
             logger.warning(f"Invalid visit_id at row {idx}: '{val}' (must start with 'V' followed by digits)")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
 
 def validate_provider_id(df, column='provider_id'):
     """
@@ -33,11 +33,11 @@ def validate_provider_id(df, column='provider_id'):
     pattern = r'^PR\d+$'
     for idx, val in df[column].astype(str).items():
         if val.strip().lower() in ['nan', '', 'none']:
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
             continue
         if not re.fullmatch(pattern, val.strip()):
             logger.warning(f"Invalid provider_id at row {idx}: '{val}' (must start with 'PR' followed by digits)")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
 
 def validate_date(df, column):
     """
@@ -47,14 +47,14 @@ def validate_date(df, column):
     formats = ["%Y-%m-%d", "%Y/%m/%d", "%Y.%m.%d", "%m/%d/%Y", "%d-%m-%Y", "%d/%m/%Y", "%d.%m.%Y", "%m-%d-%Y"]
     def try_parse(val, idx):
         if str(val).strip().lower() in ['nan', '', 'none']:
-            return np.nan
+            return pd.NaT
         for fmt in formats:
             try:
                 return datetime.strptime(val.strip(), fmt).strftime("%Y-%m-%d")
             except ValueError:
                 continue
         logger.warning(f"Invalid date in column '{column}' at row {idx}: '{val}' (unrecognized format)")
-        return np.nan
+        return pd.NaT
     df[column] = [try_parse(val, idx) for idx, val in df[column].astype(str).items()]
     logger.info(f"{column.capitalize().replace('_', ' ')} validation complete.")
 
@@ -67,7 +67,7 @@ def validate_currency(df, column='currency'):
     for idx, val in df[column].astype(str).str.strip().items():
         if val not in valid_currencies:
             logger.warning(f"Invalid currency at row {idx}: '{val}' (must be a valid 3-letter code)")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
 
 def validate_icd_code(df, column='icd_code'):
     """
@@ -77,11 +77,11 @@ def validate_icd_code(df, column='icd_code'):
     for idx, val in df[column].astype(str).items():
         val = val.strip()
         if val == '' or val.lower() in ['nan', 'none']:
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
             continue
         if not re.fullmatch(r'^[A-Z][0-9]{2}(\.[0-9A-Z]{1,4})?$', val):
             logger.warning(f"Invalid ICD code at row {idx}: '{val}' (not a valid format)")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
 
 def validate_visit_status(df, column='visit_status'):
     """
@@ -92,7 +92,7 @@ def validate_visit_status(df, column='visit_status'):
     for idx, val in df[column].astype(str).str.strip().items():
         if val not in valid_statuses:
             logger.warning(f"Invalid visit_status at row {idx}: '{val}' (not in {valid_statuses})")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
 
 def validate_billable_amount(df, column='billable_amount'):
     """
@@ -103,7 +103,7 @@ def validate_billable_amount(df, column='billable_amount'):
         raw = val.strip()
         
         if pd.isna(val) or raw.lower() in ['nan', '', 'none']:
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
             continue
         
         try:
@@ -111,7 +111,7 @@ def validate_billable_amount(df, column='billable_amount'):
             df.at[idx, column] = f"{float_val:.2f}"
         except ValueError:
             logger.warning(f"Invalid billable amount at row {idx}: '{val}' (set to NaN)")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
 
     logger.info("Billable amount column validation and formatting complete.")
 
@@ -123,7 +123,7 @@ def validate_location(df, column='location'):
     for idx, val in df[column].astype(str).items():
         if val.strip().lower() in ['nan', '', 'none', 'unknown']:
             logger.warning(f"Missing or unknown location at row {idx}: '{val}'")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
 
 def validate_reason(df, column='reason_for_visit'):
     """
@@ -133,7 +133,7 @@ def validate_reason(df, column='reason_for_visit'):
     for idx, val in df[column].astype(str).items():
         if val.strip().lower() in ['nan', '', 'none']:
             logger.warning(f"Missing reason_for_visit at row {idx}: '{val}'")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
 
 def clean_reason_and_icd_code(df, reason_col='reason_for_visit', icd_col='icd_code'):
     """
@@ -147,7 +147,7 @@ def clean_reason_and_icd_code(df, reason_col='reason_for_visit', icd_col='icd_co
         reason = parts[0] if parts else ''
         icd_candidate = parts[1] if len(parts) > 1 else ''
 
-        df.at[idx, reason_col] = reason if reason.lower() not in ['nan', '', 'none'] else np.nan
+        df.at[idx, reason_col] = reason if reason.lower() not in ['nan', '', 'none'] else pd.NA
 
         if re.fullmatch(icd_pattern, icd_candidate):
             df.at[idx, icd_col] = icd_candidate
@@ -159,14 +159,20 @@ def clean_billable_and_currency(df, bill_col='billable_amount', curr_col='curren
     """
     Detect and correct cases where a currency value was mistakenly placed in the 'billable_amount' column.
     Swaps values if a 3-letter currency code is found in the wrong column.
+    Also replaces empty strings, 'nan', or 'none' with pd.NA in both columns.
     """
     for idx in df.index:
         bill_val = str(df.at[idx, bill_col]).strip()
         curr_val = str(df.at[idx, curr_col]).strip().upper()
 
-        if re.fullmatch(r'[A-Z]{3}', bill_val) and curr_val in ['NAN', '', 'NONE']:
+        if bill_val.upper() in ['', 'NONE', 'NAN']:
+            df.at[idx, bill_col] = pd.NA
+        if curr_val in ['', 'NONE', 'NAN']:
+            df.at[idx, curr_col] = pd.NA
+
+        if re.fullmatch(r'[A-Z]{3}', bill_val) and pd.isna(df.at[idx, curr_col]):
             df.at[idx, curr_col] = bill_val
-            df.at[idx, bill_col] = np.nan
+            df.at[idx, bill_col] = pd.NA
             logger.warning(f"Swapped values at row {idx}: Moved '{bill_val}' to currency and cleared billable_amount.")
 
 def transform_visit_data(df):

@@ -71,9 +71,12 @@ def create_database():
     return conn
 
 def load_csv_to_table(conn, csv_path, table_name):
-
+    """
+    Loads data from a CSV file into a specified database table.
+    Replaces existing records if there are duplicates based on primary key.
+    """
     df = pd.read_csv(csv_path)
-    df.to_sql(table_name, conn, if_exists='append', index=False)
+    df.to_sql(table_name, conn, if_exists='replace', index=False)
 
 def main():
 

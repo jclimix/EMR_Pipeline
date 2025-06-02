@@ -21,7 +21,7 @@ from utils.helpers import *
 # logging setup
 log_dir = project_root / 'logs'
 log_dir.mkdir(exist_ok=True)
-log_file = log_dir / f'pipeline_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'
+log_file = log_dir / f'pipeline_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log'
 logger = configure_logger(str(log_file))
 
 def run_pipeline():

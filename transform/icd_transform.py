@@ -12,16 +12,6 @@ from utils.logger_setup import configure_logger
 
 logger = configure_logger("logs/icd_reference_validation.log", "DEBUG")
 
-def is_null_like(val):
-    """
-    Check if a value is considered null-like.
-    Returns True for NaN, empty strings, or common null indicators (e.g., 'nan', 'none', 'null').
-    """
-    return (
-        pd.isna(val)
-        or str(val).strip().lower() in {'', 'nan', 'none', 'null'}
-    )
-
 def validate_icd_code(df, column="icd_code"):
     """
     Validate values in the specified ICD code column using a regex pattern.
@@ -32,7 +22,7 @@ def validate_icd_code(df, column="icd_code"):
     for idx, val in df[column].astype(str).items():
         if not re.fullmatch(pattern, val.strip()):
             logger.warning(f"Invalid ICD code at row {idx}: '{val}'")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
 
 def validate_description(df, column="description"):
     """
@@ -40,9 +30,9 @@ def validate_description(df, column="description"):
     Null-like entries are logged and replaced with NaN.
     """
     for idx, val in df[column].astype(str).items():
-        if is_null_like(val):
+        if is_invalid_value(val):
             logger.warning(f"Missing or invalid description at row {idx}")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
 
 def validate_status(df, column="status"):
     """
@@ -54,7 +44,7 @@ def validate_status(df, column="status"):
         status = val.strip().lower()
         if status not in valid_statuses:
             logger.warning(f"Invalid status at row {idx}: '{val}'")
-            df.at[idx, column] = np.nan
+            df.at[idx, column] = pd.NA
         else:
             df.at[idx, column] = status.capitalize()
 
